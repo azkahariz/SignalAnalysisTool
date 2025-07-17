@@ -1,146 +1,142 @@
 # SignalAnalysisTool
 
-`SignalAnalysisTool` is a MATLAB class developed for analyzing the results of dynamic state and measurement estimation from Monte Carlo simulations. It is particularly tailored for power system applications such as synchronous generator models where the accuracy of state estimation under noise and uncertainty is critical.
+`SignalAnalysisTool` is a MATLAB class developed for the post-processing and analysis of dynamic state and measurement estimation results obtained from Monte Carlo simulations. This tool is specifically designed for power system applications, such as synchronous generator models, where accuracy under varying noise conditions and uncertainties is critical.
 
 ## 🔍 Features
 
-- Calculates **Mean Squared Error (MSE)** and **Mean Absolute Percentage Error (MAPE)** for each state and measurement
-- Checks **convergence** of estimation results against a user-defined threshold
-- Computes **statistical summaries** (mean ± 3σ) across Monte Carlo iterations
-- Provides multiple **visualization tools** for estimation performance, including:
-  - Time-series plots of estimated vs. true signals
-  - Error bar plots across iterations
-  - Error-vs-deviation plots
-- Flexible option to **filter and analyze only convergent simulations**
+* Computes **Mean Squared Error (MSE)** and **Mean Absolute Percentage Error (MAPE)** for each state variable and measurement.
+* Evaluates **convergence** of estimation results based on a user-defined error threshold.
+* Provides **statistical summaries** (mean ± 3σ) across Monte Carlo iterations.
+* Offers comprehensive **visualization tools**, including:
 
-## 📂 Structure
+  * Time-series plots comparing estimated and true signals.
+  * Error bar plots across different iterations.
+  * Error versus deviation plots.
+  * Comparative performance plots across various noise scenarios.
+* Enables **selective analysis** of only convergent simulation results.
 
-The class includes the following components:
+## 📂 Class Structure
 
 ### Properties
 
-- `SimulationData` — stores original and estimated signals
-- `ErrorStruct`, `MSEStruct`, `MAPE` — store error metrics
-- `StatOfMonteCarlo` — contains statistical summaries of estimation results
-- `Threshold`, `Deviations` — control convergence and noise/deviation analysis
+* `SimulationData` — Stores true and estimated state and measurement signals.
+* `ErrorStruct` and `MSEStruct` — Store error data and MSE calculations.
+* `MAPE` — Stores Mean Absolute Percentage Error results.
+* `StatOfMonteCarlo` — Contains statistical summaries (mean and standard deviation).
+* `Threshold` — Convergence threshold definition.
+* `Deviations` — Stores deviation data for error analysis.
 
-### Public Methods
+### Key Public Methods
 
-- `calculateMeanSquaredErrors()`
-- `calculateMeanAbsolutePercentageError()`
-- `calculateStatOfMonteCarlo()`
-- `checkErrorConvergence(threshold)`
-- `plotMonteCarloSimulationResults()`
-- `plotErrorsBelowThreshold(threshold)`
-- `plotMeanSquaredErrorTimesteps()`
-- `plotMeanAbsolutePercentageErrorTimesteps()`
-- And more...
+* `calculateMeanSquaredErrors()` — Computes MSE.
+* `calculateMeanAbsolutePercentageError()` — Computes MAPE.
+* `calculateStatOfMonteCarlo()` — Calculates mean and standard deviation of results.
+* `checkErrorConvergence(threshold)` — Determines convergence status.
+* `plotMonteCarloSimulationResults()` — Plots time-series estimation results.
+* `plotErrorsBelowThreshold(threshold)` — Visualizes errors within threshold.
+* `plotMeanSquaredErrorTimesteps()` — Visualizes MSE over simulation time.
+* `plotMeanAbsolutePercentageErrorTimesteps()` — Visualizes MAPE over simulation time.
 
-## 🛠️ Usage
+## 🛠️ Basic Usage Example
 
 ```matlab
 % Load simulation results
 simData = load('simulationData.mat');
 
-% Create an instance
+% Instantiate the analysis tool
 tool = SignalAnalysisTool(simData);
 
-% Calculate error metrics
+% Perform error analysis
 tool.calculateMeanSquaredErrors();
 tool.calculateMeanAbsolutePercentageError();
 
-% Check convergence with a custom threshold
+% Evaluate convergence
 [isX, isY] = tool.checkErrorConvergence(0.01);
 
-% Visualize results
+% Visualize estimation results
 tool.plotMonteCarloSimulationResults('Threshold', true);
 tool.plotErrorsBelowThreshold(0.05);
 ```
 
-## 📊 Example Application
+## 📊 Application Scope
 
-This tool is designed for post-processing results from state estimators such as:
+This tool is intended for analyzing post-simulation results from state estimation methods such as:
 
 * Extended Kalman Filter (EKF)
 * Unscented Kalman Filter (UKF)
 * Particle Filter (PF)
 
-It can be integrated into power system studies, especially those involving:
+It supports power system studies focused on:
 
-* Generator model state estimation
-* Robust estimation under noise and disturbances
-* Benchmarking filtering performance across multiple trials
+* Synchronous generator state estimation
+* Performance evaluation under various noise disturbances
+* Benchmarking filtering methods in dynamic systems
 
 ## 📎 Dependencies
 
 * MATLAB R2020b or later
-* Simulink (if data originates from Simulink models)
-* Data structure format consistent with `x`, `x_hat`, `y`, `y_hat` fields
+* Simulink (if using Simulink-based simulation data)
+* Simulation data formatted with required fields (`x`, `x_hat`, `y`, `y_hat`)
 
 ## 🚀 Getting Started
 
-This repository is designed to work with MATLAB Simulink-based simulations for dynamic state estimation (e.g., synchronous generators). To use the `SignalAnalysisTool`, follow the steps below.
+This repository is designed for use with Simulink-based dynamic system simulations (e.g., synchronous generators). Follow the steps below to utilize the `SignalAnalysisTool` class:
 
-### 🔧 Requirements
+### Requirements
 
-- MATLAB R2020b or newer
-- Simulink
-- Estimation models for EKF, UKF, and PF (`proj_sim_ekf_wonoise`, `proj_sim_ukf_wonoise`, `proj_sim_pf_experiment`)
-- Parameter script (e.g., `parameter_ekf_ukf_pf.m`)
+* MATLAB R2020b or newer
+* Simulink
+* Predefined estimation models: `proj_sim_ekf_wonoise`, `proj_sim_ukf_wonoise`, `proj_sim_pf_experiment`
+* Parameter initialization script (e.g., `parameter_ekf_ukf_pf.m`)
 
----
+## 🧪 Example Workflow (from `main.m` script)
 
-## 🧪 Example Workflow (`main.m`)
+### Process Overview
 
-A full Monte Carlo simulation and analysis can be done using the `main.m` script.
+1. Select estimation methods: EKF, UKF, or PF.
+2. Define noise or deviation parameters.
+3. Execute Simulink model for Monte Carlo iterations.
+4. Analyze estimation results via:
 
-### Steps:
-1. Select estimation method(s): EKF, UKF, PF.
-2. Set up noise/deviation level for each iteration.
-3. Run Simulink model for 100 Monte Carlo iterations.
-4. Analyze estimation accuracy using:
-   - `calculateMeanSquaredErrors()`
-   - `calculateMeanAbsolutePercentageError()`
-   - `checkErrorConvergence()`
-   - `calculateStatOfMonteCarlo()`
-5. Visualize:
-   - Estimation vs. true states
-   - Errors and convergence per iteration
-   - Effect of deviation on MSE
+   * `calculateMeanSquaredErrors()`
+   * `calculateMeanAbsolutePercentageError()`
+   * `checkErrorConvergence()`
+   * `calculateStatOfMonteCarlo()`
+5. Generate visualization outputs:
 
-### Run Simulation:
+   * Estimated versus actual signals
+   * Convergence and error plots
+   * Deviation impact analysis
+
+### Example Code Snippet
 
 ```matlab
-% Inside main.m
+% In main.m
 simulationFileName = 'sim_pf_experiment';
 parameter_ekf_ukf_pf; % Load system parameters
 
-% Run simulation with selected filters (EKF, UKF, PF)
-% Will execute Simulink model and analyze estimation accuracy
+% Execute Simulink simulation and analyze results
+% Generates plots and .mat files containing SignalAnalysisTool objects
 ```
-### Output:
 
-* `.txt` file containing simulation log
-* `.mat` file containing `SignalAnalysisTool` object per filter
-* Multiple visual plots for diagnostic evaluation
+## 📦 Project File Structure
 
-## 📦 File Structure
-
-```bash
+```plaintext
 .
 ├── main.m                    # Main simulation and analysis script
-├── SignalAnalysisTool.m     # Core analysis class
-├── parameter_ekf_ukf_pf.m   # System model and filter parameters
-├── proj_sim_*.slx           # Simulink models for EKF, UKF, PF
-├── *.mat                    # Output of simulations
-└── *.txt                    # Logged simulation results
+├── SignalAnalysisTool.m      # Analysis class definition
+├── parameter_ekf_ukf_pf.m    # System and filter parameter configuration
+├── proj_sim_*.slx            # Simulink models for EKF, UKF, and PF
+├── *.mat                     # Saved simulation results
+├── *.txt                     # Simulation log files
 ```
 
 ## 📘 License
 
-This project is licensed under the MIT License — see the `LICENSE` file for details.
+This project is licensed under the MIT License. Please refer to the `LICENSE` file for details.
 
 ## 👨‍💻 Author
 
-Azka Hariz Sartono<br>
-Electrical Engineering — Universitas Gadjah Mada<br>
+Azka Hariz Sartono
+Department of Electrical Engineering
+Universitas Gadjah Mada
